@@ -48,6 +48,10 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              sysctl -p /etc/sysctl.d/sysctl.conf && nginx -g 'daemon off;'
           ports:
             - name: http
               containerPort: 8080
@@ -79,6 +83,8 @@ spec:
               mountPath: /tmp
             - name: nginx-cache
               mountPath: /var/lib/nginx/tmp
+            - name: sysctl-config
+              mountPath: /etc/sysctl.d/  
             {{- if .Values.extraVolumeMounts }}
             {{- include "privatebin.tplvalues.render" (dict "value" .Values.extraVolumeMounts "context" $) | nindent 12 }}
             {{- end }}
@@ -110,6 +116,9 @@ spec:
             medium: "Memory"
         - name: nginx-cache
           emptyDir: {}
+        - name: sysctl-config
+          configMap:
+            name: {{ include "privatebin.fullname" . }}-disable-ipv6
       {{- if .Values.extraVolumes }}
       {{- include "privatebin.tplvalues.render" (dict "value" .Values.extraVolumes "context" $) | nindent 8 }}
       {{- end }}
