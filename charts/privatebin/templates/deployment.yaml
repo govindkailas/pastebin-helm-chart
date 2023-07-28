@@ -83,8 +83,9 @@ spec:
               mountPath: /tmp
             - name: nginx-cache
               mountPath: /var/lib/nginx/tmp
-            - name: sysctl-config
-              mountPath: /etc/sysctl.d/  
+            - name: site-config
+              mountPath: /etc/nginx/http.d/site.conf
+              subPath: site.conf
             {{- if .Values.extraVolumeMounts }}
             {{- include "privatebin.tplvalues.render" (dict "value" .Values.extraVolumeMounts "context" $) | nindent 12 }}
             {{- end }}
@@ -116,7 +117,7 @@ spec:
             medium: "Memory"
         - name: nginx-cache
           emptyDir: {}
-        - name: sysctl-config
+        - name: site-config
           configMap:
             name: {{ include "privatebin.fullname" . }}-disable-ipv6
       {{- if .Values.extraVolumes }}
