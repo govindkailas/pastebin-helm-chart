@@ -1,6 +1,6 @@
 # PrivateBin Helm Chart
 
-This is a kubernetes chart to deploy [PrivateBin](https://github.com/PrivateBin/PrivateBin).
+This is a kubernetes chart to deploy [PrivateBin](https://github.com/PrivateBin/PrivateBin). This has been modified to work with only ipv4. I found this helpful as most of the clusters don't have ipv6 enabled on worker nodes.
 
 ## Quick Start
 
